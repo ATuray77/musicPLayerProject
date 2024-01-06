@@ -31,7 +31,7 @@ const progressContainer = document.getElementById('progress-container');
 const title = document.getElementById('title');
 const cover = document.getElementById('cover');
 
-const songs = ['her', 'summer', 'ukulele']; //song titles
+const songs = ['hey', 'summer', 'ukulele']; //song titles
 
 //keep track of song
 let songIndex = 2;
@@ -47,11 +47,58 @@ function loadSong(song) {
 
 //creating playSong function
 function playSong () {
-    musicContainer.classList.add('play');
+    musicContainer.classList.add('play'); //adds class of play
+    playBtn.querySelector('i.fas').classList.remove('fa-play');//removes play button
+    playBtn.querySelector('i.fas').classList.add('fa-pause');//adds pause button
+    audio.play(); //play the audio
 }
 //creating pauseSong function
+function pauseSong () {
+    musicContainer.classList.remove('play'); //removes class of play
+    playBtn.querySelector('i.fas').classList.add('fa-play');//adds play
+    playBtn.querySelector('i.fas').classList.remove('fa-pause');//removes pause
+    audio.pause(); //pause the audio
+}
 
+//creates prevSong function
+function prevSong() {
+    songIndex--; //going backwards
 
+    if (songIndex < 0) {  //if we are at the first song and click prev we want to go to the last song
+       songIndex = songs.length - 1 // go to the last song
+    }
+
+    loadSong(songs[songIndex]);
+
+    playSong();
+}
+
+//creates nextSong function
+function nextSong() {
+    songIndex++; //going forward
+
+    if (songIndex > songs.length -1) {  //if we are at the last song and press next
+       songIndex = 0; //this takes us to the first song
+    }
+
+    loadSong(songs[songIndex]);
+
+    playSong();
+}
+
+//function to to update the progress
+function updateProgress(e) {
+    const { duration, currentTime } = e.srcElement;
+    const progressPercent = (currentTime / duration) * 100;
+    progress.style.width = `${progressPercent}%`;
+}
+
+function setProgress(e) {
+    const width = this.clientWidth;
+    const clickX = e.offsetX;
+    const duration = audio.duration;
+    audio.currentTime = (clickX / width) * duration;
+}
 //play song if it's paused otherwise play song
 playBtn.addEventListener('click', () => {
     const isPlaying = musicContainer.classList.contains('play');
@@ -62,4 +109,15 @@ playBtn.addEventListener('click', () => {
         playSong();
     }
 });
+
+//activates previous button
+prevBtn.addEventListener('click', prevSong)
+
+//activates next button
+nextBtn.addEventListener('click', nextSong)
+
+//activate the progress bar
+audio.addEventListener('timeupdate', updateProgress);
+
+progressContainer.addEventListener('click', setProgress)
 
