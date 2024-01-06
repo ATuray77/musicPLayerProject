@@ -1,2 +1,1 @@
-# musicPlayerProject
-# musicPlayerProject
+# myMusicPlayerProject
